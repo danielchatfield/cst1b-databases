@@ -1,0 +1,230 @@
+\documentclass{supervision}
+\usepackage{course}
+
+\Supervision{1}
+
+\begin{document}
+  \begin{questions}
+    \section*{2003 Paper 5 Question 8}
+    \question
+      \begin{parts}
+        \part
+          \begin{subparts}
+            \subpart[5] Define the operators in the core relational algebra.
+              \begin{solution}
+                \begin{description}
+                  \item[Union] $R \cup S$ is the union of $R$ and $S$.
+                  \item[Intersection] $R \cap S$ is the intersection of $R$ and
+                    $S$.
+                  \item[Difference] $R - S$ is the difference between $R$ and
+                    $S$.
+                  \item[Product] $R \times S$ is the product of $R$ and $S$.
+                  \item[Selection] $\sigma _p(R)$ is a selection over $R$. $P$
+                    is a propositional formula and the operator selects all
+                    tuples in $R$ for which $p$ holds.
+                  \item[Projection] $\pi _x(R)$ is a projection over $R$.$x$ is
+                    a set of attribute names.
+                \end{description}
+
+              \end{solution}
+
+
+            \subpart[4] Define the domain relational calculus.
+              \begin{solution}
+                $Q = \{ (A_1 = v_1,\, A_2 = v_2, \ldots,\, A_k = v_k) | P(v_1,\, v_2, \ldots,\, v_k)\}$
+              \end{solution}
+
+            \subpart[3] Show how the relational algebra can be encoded in the
+              domain relational calculus.
+              \begin{solution}
+                \begin{itemize}
+                  \item Selection
+                    \begin{description}
+                      \item[Relational Algebra]
+                        $Q = \sigma_{A > 12}(R)$
+                      \item[Domain Relational Calculus]
+                        Encoded as:\\
+                        $Q = \{\{(A, a), (B, b), (C, c)\} |
+                        \{\{(A, a), (B, b), (C, c)\} \in R \land a > 12\}$
+                    \end{description}
+                  \item Projection
+                    \begin{description}
+                      \item[Relational Algebra]
+                        $Q = \pi_{B,C}(R)$
+                      \item[Domain Relational Calculus]
+                        Encoded as: \\
+                        $Q = \{\{(B, b), (C, c)\} |
+                        \{\{(A, a), (B, b), (C, c)\} \in R \}$
+                    \end{description}
+                \end{itemize}
+              \end{solution}
+
+          \end{subparts}
+        \part A \emph{constraint} can be expressed using relational algebra.
+          For example, $R = \emptyset$ specifies the constraint that relation
+          $R$ must be empty, and $(R \cup S) \subseteq T$ specifies that every
+          tuple in the union of $R$ and $S$ must be in $T$.
+
+          Consider the following schema.
+
+          \begin{code}[mathescape]{sql}
+            RockStar($\overline{name}$, address, gender, birthday)            RockManager($\overline{managername}$, starname)
+          \end{code}
+
+          \begin{subparts}
+            \subpart[1] Give a constraint to express that rock stars must be
+              either male or female.
+              \begin{solution}
+                $\sigma _{gender \, != \, 'male'\: AND\: gender\, !=\,
+                'female'}(RockManager) = \emptyset$
+              \end{solution}
+
+            \subpart[3] Give a constraint to express the referential integrity
+              constraint between the \lstinline|RockStar| and
+              \lstinline|RockManager| relations. (Note: \lstinline|starname|
+              is intended to be a foreign key.)
+              \begin{solution}
+                $\pi _{starname}(RockManager) \subseteq \pi _{name}(RockStar)$
+              \end{solution}
+
+            \subpart[4] Give a constraint to express the functional dependency
+              \lstinline|name|$\rightarrow$\lstinline|address| for the RockStar
+              relation.
+              \begin{solution}
+                \emph{Not covered this yet and I don't understand it from slides alone}
+              \end{solution}
+
+          \end{subparts}
+      \end{parts}
+    \question
+      \section*{2004 Paper 5 Question 8}
+      Assume a simple movie database with the following schema. (You may assume
+      that producers have a unique certification number, \lstinline|Cert|, that
+      is also recorded in the \lstinline|Movie| relation as attribute
+      \lstinline|prodC#|; and no two movies are produced with the same title.)
+
+      \begin{code}[mathescape]{}
+        Movie($\overline{title}$, year, length, prodC#)        StarsIn(movieTitle, movieYear, starName)        Producer(name, address, $\overline{cert}$)        MovieStar($\overline{name}$, gender, birthdate)
+      \end{code}
+
+      \begin{parts}
+        \part Write the following queries in SQL:
+          \begin{subparts}
+            \subpart[1] Who were the male stars in the film \textit{The Red
+              Squirrel}?
+              \begin{solution}
+                \begin{code}{SQL}
+                  (SELECT name
+                   FROM MovieStar
+                   WHERE gender='male')
+                  INTERSECT
+                  (SELECT starName
+                   FROM StarsIn
+                   WHERE movieTitle='The Red Squirrel')
+                \end{code}
+              \end{solution}
+
+            \subpart[2] Which movies are longer than \textit{Titanic}?
+              \begin{solution}
+                \begin{code}{SQL}
+                  SELECT *
+                  FROM Movie
+                  WHERE length >
+                      (SELECT length
+                       from Movie
+                       WHERE title='Titanic')
+                \end{code}
+              \end{solution}
+
+          \end{subparts}
+        \part ${SQL}$ has a boolean-valued operator \lstinline|IN| such that
+          the expression \lstinline|s IN R| is \lstinline|true| when $s$ is
+          contained in the relation $R$ (assume for simplicity that $R$ is a
+          single attribute relation and hence $s$ is a simple atomic value).
+
+          Consider the following nested \lstinline|SQL| query that uses the
+          \lstinline|IN| operator:
+
+          \begin{code}{sql}
+            SELECT name            FROM   Producer            WHERE  cert IN (SELECT prodC#                            FROM   Movie                            WHERE  title IN (SELECT movieTitle                                             FROM   StarsIn                                             WHERE  starName='Nancho Novo'));
+          \end{code}
+
+          \begin{subparts}
+            \subpart[1] State concisely what this query is intended to mean.
+              \begin{solution}
+                This query returns the names of the producers of the movies
+                that 'Nancho Novo' starred in.
+              \end{solution}
+
+            \subpart[2] Express this nested query as a single
+              \lstinline|SELECT-FROM-WHERE| query.
+              \begin{solution}
+                \begin{code}{SQL}
+                  SELECT DISTINCT Producer.name
+                  FROM   StarsIn, Movie, Producer
+                  WHERE  StarsIn.starName = 'nancho Novo',
+                         Movie.title = StarsIn.movieTitle,
+                         Producer.cert = Movie.prodC#
+                \end{code}
+              \end{solution}
+
+            \subpart[6] Is your query from part (b)(ii) always equivalent to
+              the original query? If yes, then justify your answer; if not,
+              then explain the difference and show how they could be made
+              equivalent.
+              \begin{solution}
+                The query is always equiavalent, the DISTINCT ensures that
+                a producer is only returned once, just like the original query.
+
+                The outer-most part of the original query was over the Producer
+                table and therefore a single producer could only be returned
+                once, even if they produced multiple films with Nancho Novo
+                since the predicate IN is simply $true$ or $false$.
+
+                The new query joins the tables together which duplicates the
+                Producer field and therefore the \lstinline|DISTINCT| is
+                required to ensure no duplicates.
+              \end{solution}
+          \end{subparts}
+
+        \part[8] \lstinline|SQL| has a boolean-valued operator
+          \lstinline|EXISTS| such that \lstinline|EXISTS R| is true if and only
+          if $R$ is not empty.
+
+          Show how \lstinline|EXISTS| is, in fact, redundant by giving a simple
+          ${SQL}$ expression that is equivalent to \lstinline|EXISTS R| but
+          does not involve \lstinline|EXISTS| or any cardinality operators,
+          e.g. \lstinline|COUNT|. \emph{[Hint: You may use the \lstinline|IN|
+          operator.]}
+          \begin{solution}
+            \emph{I think this is a valid solution but the number of marks
+            available for this question is making me doubt that.}
+            \begin{code}{sql}
+              R IN R
+            \end{code}
+
+            An example:
+            \begin{code}{sql}
+              SELECT *
+              FROM Colleges
+              WHERE EXISTS (
+                  SELECT *
+                  FROM Students
+                  WHERE Colleges.id = Students.college
+              )
+            \end{code}
+            can be written as:
+            \begin{code}{sql}
+              SELECT *
+              FROM Colleges
+              WHERE id IN (
+                  SELECT college
+                  FROM Students
+              )
+            \end{code}
+          \end{solution}
+      \end{parts}
+
+
+  \end{questions}
+\end{document}
