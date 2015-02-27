@@ -1,0 +1,65 @@
+\documentclass{supervision}
+\usepackage{course}
+
+\Supervision{2}
+\begin{document}
+  \begin{questions}
+    \section*{2009 Paper 4 Question 8}
+    \question
+      \begin{parts}
+        \part[2] Define the concept of a \emph{functional dependency}.
+        \part Let \lstinline|R(A, B, C, D, E, F)| be a database schema with
+          functional dependencies
+          \begin{align*}
+            A, B &\to C    \\
+            B, C &\to A, D \\
+               D &\to E    \\
+            C, F &\to B
+          \end{align*}
+          \begin{subparts}
+            \subpart[3] Compute the closure of $\{A,\, B\}$.
+            \subpart[1] Is $A, B \to D, F$ a functional dependency over $R$?
+              Justify your answer.
+          \end{subparts}
+        \part[2] Define the concept of a \emph{multivalued dependency}.
+        \part[3] Suppose the functional dependency $X \to Y$ holds on a
+          relational schema. Does this mean that the multivalued dependency $X
+          \twoheadrightarrow Y$ holds? Justify your answer.
+        \part[3] Define the concept of a \emph{lossless-join decomposition}.
+        \part[6] Let $R(X)$ be a database schema, where $X$ is a set of
+          attributes. Show that $S(Y \cup Z)$ and $T(Y \cup (X - Z))$ is a
+          lossless-join decomposition of $R(X)$ if and only if the multivalued
+          dependency $Y \twoheadrightarrow Z$ holds over $R$.
+      \end{parts}
+    \section*{2010 Paper 4 Question 5}
+    \question
+      \begin{parts}
+        \part Suppose that $R(A, B, C)$ is a relational schema with functional
+          dependencies $F = \{ A,B \to C, C \to B\}$.
+          \begin{subparts}
+            \subpart[2] Is this schema in 3NF? Explain.
+            \subpart[2] Is this schema in BCNF? Explain.
+          \end{subparts}
+        \part Decomposition plays an important role in database design.
+          \begin{subparts}
+            \subpart[2] Define what is meant by a \emph{lossless-join
+              decomposition}.
+            \subpart[2] Define what is meant by a \emph{dependency preserving
+              decomposition}.
+          \end{subparts}
+        \part Let $R(A, B, C, D, E)$ be a relational schema with the following
+          functional dependencies.
+          \begin{align*}
+            A, B &\to C \\
+            D, E &\to C \\
+               B &\to D \\
+          \end{align*}
+          \begin{subparts}
+            \subpart[2] What is the closure of $\{ A, B \}$?
+            \subpart[2] What is the closure of $\{ B, E \}$?
+            \subpart[8] Decompose the schema to BCNF in two different ways. In
+              each case, are all dependencies preserved? Explain.
+          \end{subparts}
+      \end{parts}
+  \end{questions}
+\end{document}
