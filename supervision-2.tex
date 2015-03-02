@@ -8,6 +8,12 @@
     \question
       \begin{parts}
         \part[2] Define the concept of a \emph{functional dependency}.
+        \begin{solution}
+          A set of attributes $X$ functional determines another set of
+          attributes if, and only if, each $X$ value is associated with
+          precisely one $Y$ value.
+        \end{solution}
+
         \part Let \lstinline|R(A, B, C, D, E, F)| be a database schema with
           functional dependencies
           \begin{align*}
@@ -18,18 +24,79 @@
           \end{align*}
           \begin{subparts}
             \subpart[3] Compute the closure of $\{A,\, B\}$.
+            \begin{solution}
+              $\{ A, B, C, D, E \}$
+            \end{solution}
+
             \subpart[1] Is $A, B \to D, F$ a functional dependency over $R$?
               Justify your answer.
+              \begin{solution}
+                No, because $F$ is not in the closure.
+              \end{solution}
           \end{subparts}
+
         \part[2] Define the concept of a \emph{multivalued dependency}.
+          \begin{solution}
+            A multivalued dependency on $R$ is a constraint such that if two
+            tuples of $R$ agree on all the attributes of $X$, then their
+            components in $Y$ can be swapped and the result will be two tuples
+            that are also in the relation.
+          \end{solution}
+
         \part[3] Suppose the functional dependency $X \to Y$ holds on a
           relational schema. Does this mean that the multivalued dependency $X
           \twoheadrightarrow Y$ holds? Justify your answer.
+          \begin{solution}
+            Every functional dependency is a multivalued dependency since if it
+            is a functional dependency then swapping their components in $y$
+            will result in the same tuple (since they are neccessarily the same
+            for tuples that agree on $X$).
+          \end{solution}
+
         \part[3] Define the concept of a \emph{lossless-join decomposition}.
+          \begin{solution}
+            A lossless-join decomposition is splitting a relation $R$ into two
+            relations $R_1$ and $R_2$ such that $R_1 \bowtie R_2 = R$.
+          \end{solution}
+
         \part[6] Let $R(X)$ be a database schema, where $X$ is a set of
           attributes. Show that $S(Y \cup Z)$ and $T(Y \cup (X - Z))$ is a
           lossless-join decomposition of $R(X)$ if and only if the multivalued
           dependency $Y \twoheadrightarrow Z$ holds over $R$.
+          \begin{solution}
+            \begin{itemize}
+              \item Suppose $Z \twoheadrightarrow W$
+              \item We know (from proof of Heath's rule) that $R \subseteq
+                \pi_{Z,W}(R) \bowtie \pi_{Z,Y}(R)$ so we only need to show
+                $\pi_{Z,W}(R) \bowtie \pi_{Z,Y}(R) \subseteq R$.
+              \item Suppose $r \in \pi_{Z,W}(R) \bowtie \pi_{Z,Y}(R)$.
+              \item There must be a $t \in R$ and $u \in R$ with $\{ r \} =
+                \pi_{Z,W}(\{ t \}) \bowtie \pi_{Z,Y}(\{ u \})$.
+              \item In other words there must be a $t \in R$ and $u \in R$ with
+                $t.Z = u.Z$
+              \item So the MVD tells is that there must be some tuple $v \in R$
+                such that
+                \begin{itemize}
+                  \item $v$ agrees with both $t$ and $u$ on the attributes of
+                    $Z$
+                  \item $v$ agrees with $t$ on the attributes of $W$.
+                  \item $v$ agrees with $u$ on the attributes of $Y$.
+                \end{itemize}
+              \item This $v$ must be the same as $r$, so $r \in R$.
+              \item Suppose $R = \pi_{Z,W}(R) \bowtie \pi_{Z,Y}(R)$
+              \item Let $t$ and $u$ be any records in $R$ with $t.Z = u.Z$.
+              \item Let $v$ be defined by $\{ v \} = \pi_{Z,W}(\{ t\}) \bowtie
+                \pi_{Z,Y}(\{ u\})$
+              \item By construction we have:
+                \begin{itemize}
+                  \item $v.Z = t.Z = u.Z$
+                  \item $v.W = t.W$
+                  \item $v.Y = u.Y$
+                \end{itemize}
+            \end{itemize}
+            Therefore, $Z \twoheadrightarrow W$ holds.
+          \end{solution}
+
       \end{parts}
     \section*{2010 Paper 4 Question 5}
     \question
@@ -38,27 +105,56 @@
           dependencies $F = \{ A,B \to C, C \to B\}$.
           \begin{subparts}
             \subpart[2] Is this schema in 3NF? Explain.
+              \begin{solution}
+                $A, B$ and $A, C$ are keys for $R$ and therefore there are no
+                non-prime attributes.
+              \end{solution}
             \subpart[2] Is this schema in BCNF? Explain.
+              \begin{solution}
+                $C$ is not a key and $C \to B$ therefore the schema is not in
+                BCNF.
+              \end{solution}
+
           \end{subparts}
         \part Decomposition plays an important role in database design.
           \begin{subparts}
             \subpart[2] Define what is meant by a \emph{lossless-join
               decomposition}.
+                \begin{solution}
+                  A lossless-join decomposition is splitting a relation $R$ into
+                  two relations $R_1$ and $R_2$ such that $R_1 \bowtie R_2 = R$.
+                \end{solution}
             \subpart[2] Define what is meant by a \emph{dependency preserving
               decomposition}.
+              \begin{solution}
+                A decomposition is dependency preserving if enforcing all
+                functional dependencies on the two decomposed relations is the
+                same as enforcing them on the join of them.
+              \end{solution}
           \end{subparts}
         \part Let $R(A, B, C, D, E)$ be a relational schema with the following
           functional dependencies.
           \begin{align*}
             A, B &\to C \\
             D, E &\to C \\
-               B &\to D \\
+               B &\to D \\l
           \end{align*}
           \begin{subparts}
             \subpart[2] What is the closure of $\{ A, B \}$?
+              \begin{solution}
+                $\{ A, B, C, D\}$
+              \end{solution}
             \subpart[2] What is the closure of $\{ B, E \}$?
+              \begin{solution}
+                $\{ B, C, D, E\}$
+              \end{solution}
             \subpart[8] Decompose the schema to BCNF in two different ways. In
               each case, are all dependencies preserved? Explain.
+              \begin{solution}
+                \begin{description}
+                  \emph{Not sure about this}
+                \end{description}
+              \end{solution}
           \end{subparts}
       \end{parts}
   \end{questions}
